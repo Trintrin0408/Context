@@ -68,6 +68,7 @@
 ```json
 {
   "supplier_id": 3,
+  "order_id": 10,
   "transaction_type": "purchase",
   "transaction_date": "2026-06-20",
   "due_date": "2026-07-20",
@@ -77,6 +78,7 @@
   ]
 }
 ```
+*(Lưu ý: `transaction_type` có thể nhận các giá trị: `"purchase" | "return" | "adjustment" | "rental"`. Trường `order_id` là tùy chọn, nhưng bắt buộc nếu đây là giao dịch nhập/thuê cho một đơn hàng cụ thể).*
 
 **Response `201`**
 
@@ -91,7 +93,7 @@
 
 **Lỗi:** `400 MSG-SPU-02` — số tiền ≤ 0 / không có item; `404` — NCC không tồn tại.
 
-> ⚠️ **UC-71 (thuê):** `transaction_type` của `supplier_payables` không có giá trị `rental`. Tạm dùng `purchase`, hoặc bổ sung enum `rental` vào DB nếu cần phân biệt thuê/mua.
+> ⚠️ **Lưu ý DB:** API yêu cầu DB phải bổ sung giá trị `rental` vào ENUM `transaction_type` và cột `order_id` (nullable FK) vào bảng `supplier_payables` để xử lý trọn vẹn UC-71 và hỗ trợ báo cáo theo đơn hàng.
 
 ---
 

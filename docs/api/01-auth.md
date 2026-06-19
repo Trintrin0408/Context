@@ -12,6 +12,8 @@
 | UC-3 | Quên mật khẩu | `POST /auth/forgot-password` | Tất cả | ✅ |
 | UC-4 | Đổi mật khẩu | `PUT /me/password` | Tất cả (đã đăng nhập) | ✅ |
 | UC-5 | Xem hồ sơ cá nhân | `GET /me` | Tất cả (đã đăng nhập) | ✅ |
+| UC-6 | Cập nhật hồ sơ cá nhân | `PUT /me` | Tất cả (đã đăng nhập) | ✅ |
+| D-01 | Làm mới Token | `POST /auth/refresh` | Tất cả (đã đăng nhập) | ✅ |
 | UC-7 | Xem danh sách thông báo | `GET /notifications` | Tất cả (đã đăng nhập) | ✅ |
 | UC-7 | Đánh dấu đã đọc | `PATCH /notifications/{id}/read` | Tất cả (đã đăng nhập) | ✅ |
 
@@ -36,7 +38,7 @@
   "username": "manager01",
   "password": "secret123",
   "device_token": "fcm_xxx",
-  "device_type": "web"
+  "device_type": "web" // Các giá trị hợp lệ: "android" | "web" | "ios"
 }
 ```
 
@@ -120,6 +122,7 @@
 ```
 
 > ⚠️ **Cần xác nhận:** Đồ án có làm self-service reset (gửi mail/OTP) không, hay giữ đúng BR-FP (Admin reset thủ công)? Mẫu này đang theo BR-FP.
+**Ghi chú:** Endpoint luôn trả về `200` với cùng message bất kể username có tồn tại hay không để tránh user enumeration attack.
 
 ---
 
@@ -220,6 +223,7 @@
 ```
 
 **Ghi chú:** Đây là endpoint **lấy** thông báo in-app. Cơ chế **đẩy** real-time (FCM/WebSocket qua `device_token`) nằm ngoài phạm vi REST doc — cần chốt riêng.
+**Lưu ý:** DB `notifications.is_read` có kiểu `TINYINT(1)`, Backend tự động map thành `boolean` (`true/false`) trong JSON response.
 
 ---
 
@@ -244,3 +248,54 @@
 | HTTP | code | Khi nào |
 |------|------|---------|
 | 404 | — | Không tìm thấy thông báo, hoặc không thuộc về người dùng |
+
+---
+
+### `[UC-6]` Cập nhật hồ sơ cá nhân
+
+`PUT /me`
+
+| | |
+|---|---|
+| **Vai trò** | Tất cả (đã đăng nhập) |
+| **UC** | UC-6 |
+| **Mô tả** | Cập nhật thông tin hồ sơ của người dùng đang đăng nhập (`full_name`, `email`, `phone`). |
+
+**Request body**
+
+```json
+{
+  "full_name": "Nguyễn Văn B",
+  "email": "b@binhnguyen.vn",
+  "phone": "0901234568"
+}
+```
+
+**Response `200`**
+
+```json
+{ "success": true, "message": "Cập nhật hồ sơ thành công", "data": null }
+```
+
+---
+
+### `[D-01]` Làm mới Token
+
+`POST /auth/refresh`
+
+| | |
+|---|---|
+| **Vai trò** | Tất cả (đã đăng nhập) |
+| **UC** | - |
+| **Mô tả** | Làm mới JWT token đang được sử dụng (trong grace period). |
+
+**Response `200`**
+
+```json
+{
+  "success": true,
+  "data": {
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6..."
+  }
+}
+```

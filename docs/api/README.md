@@ -33,6 +33,21 @@
 
 `code` tái dùng bộ mã **MSG-\*** đã định nghĩa ở mục 8 của `documents.md`.
 
+> **Quy ước chuẩn hóa prefix MSG (để tránh trùng lặp):**
+> - `MSG-AU`: Auth (Xác thực, quên mật khẩu)
+> - `MSG-US`: User & Role
+> - `MSG-CT`: Catalog (danh mục)
+> - `MSG-SP`: Supplier (nhà cung cấp)
+> - `MSG-WH`: Warehouse & Inventory
+> - `MSG-PO`: Policy
+> - `MSG-CU`: Customer
+> - `MSG-QO`: Quotation
+> - `MSG-CO`: Order (đơn hàng)
+> - `MSG-SV`: Survey & Assignment
+> - `MSG-PM`: Payment & Settlement
+> - `MSG-MO`: Mobile (Tiến độ hiện trường)
+> - `MSG-RP`: Report
+
 ### A.3 Envelope lỗi
 
 ```json
@@ -76,10 +91,14 @@ Query chuẩn cho mọi endpoint list:
 | 409  | Xung đột nghiệp vụ (trùng, sai trạng thái) |
 | 500  | Lỗi server |
 
+> **Lưu ý:**
+> - Mọi endpoint yêu cầu xác thực đều có thể trả `401` nếu token không hợp lệ hoặc hết hạn.
+> - Hệ thống không hard-delete; mọi tác vụ vô hiệu hóa/xóa đều dùng `PATCH .../status` (soft delete), vì vậy hệ thống **không sử dụng method `DELETE`**.
+
 ### A.6 Quy ước dữ liệu
 
 - Ngày: `YYYY-MM-DD`
-- Thời gian: ISO-8601 — `2026-06-19T10:00:00Z`
+- Thời gian: ISO-8601 UTC — `2026-06-19T10:00:00Z` (Tất cả các trường kiểu `DATETIME` trong DB sẽ được serialize thành ISO-8601 UTC trong API).
 - Tiền: kiểu **number**, đơn vị VNĐ.
 
 ---

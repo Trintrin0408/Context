@@ -57,13 +57,14 @@
 **Request body**
 
 ```json
-{ "policy_value": 40, "unit": "%", "description": "Tăng tỷ lệ cọc tối thiểu lên 40%" }
+{ "policy_value": 40.00, "unit": "%", "description": "Tăng tỷ lệ cọc tối thiểu lên 40%" }
 ```
+*(Lưu ý: `policy_value` phải được truyền theo kiểu số thực (float/decimal), ví dụ: `40.00` thay vì `40` để nhất quán với Database `DECIMAL(15,2)`).*
 
 **Response `200`**
 
 ```json
-{ "success": true, "code": "MSG-DP-01", "message": "Cập nhật chính sách thành công", "data": { "code": "MIN_DEPOSIT", "policy_value": 40, "unit": "%" } }
+{ "success": true, "code": "MSG-DP-01", "message": "Cập nhật chính sách thành công", "data": { "code": "MIN_DEPOSIT", "policy_value": 40.00, "unit": "%" } }
 ```
 
 **Lỗi:** `400` — giá trị ngoài phạm vi cho phép (vd % hoàn không trong 0–100).

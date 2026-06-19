@@ -18,6 +18,7 @@
 | UC-15 | Tạo vai trò | `POST /roles` | Admin | ✅ |
 | UC-16 | Cập nhật vai trò | `PUT /roles/{id}` | Admin | ✅ |
 | UC-17 | Vô hiệu hóa vai trò | `PATCH /roles/{id}/status` | Admin | ✅ |
+| B-08 | Xem danh sách user theo vai trò | `GET /roles/{id}/users` | Admin | ✅ |
 | UC-18 | Gán quyền cho vai trò | `PUT /roles/{id}/permissions` | Admin | ✅ |
 | — | Xem danh sách quyền | `GET /permissions` | Admin | ✅ |
 
@@ -92,7 +93,7 @@
 
 | HTTP | code | Khi nào |
 |------|------|---------|
-| 400 | MSG-AU-02 | Thiếu field bắt buộc |
+| 400 | MSG-AU-02 | Thiếu field bắt buộc hoặc dữ liệu sai định dạng (`email` phải chuẩn RFC 5322, `phone` phải từ 10-12 ký số) |
 | 409 | MSG-AU-03 | `username` đã tồn tại (BR-AU01) |
 | 409 | MSG-AU-04 | Vai trò `inactive`, không được gán (BR-AU03) |
 
@@ -139,6 +140,7 @@
 ```json
 { "status": "inactive" }
 ```
+*(Các giá trị hợp lệ: `"active" | "inactive" | "suspended"`)*
 
 **Response `200`**
 
@@ -150,6 +152,7 @@
 
 | HTTP | code | Khi nào |
 |------|------|---------|
+| 400 | MSG-DU-03 | `status` truyền vào không nằm trong danh sách hợp lệ |
 | 409 | MSG-DU-02 | Admin tự vô hiệu hóa chính mình (BR-DU05) |
 
 ---
@@ -272,6 +275,29 @@
 
 ```json
 { "success": true, "code": "MSG-ROLE-03", "message": "Cập nhật vai trò thành công", "data": { "id": 5, "status": "inactive" } }
+```
+
+---
+
+### `[B-08]` Xem danh sách user theo vai trò
+
+`GET /roles/{id}/users`
+
+| | |
+|---|---|
+| **Vai trò** | Admin |
+| **UC** | UC-13, UC-14 |
+| **Mô tả** | Xem danh sách người dùng đang được gán vai trò này để Admin giám sát. |
+
+**Response `200`**
+
+```json
+{
+  "success": true,
+  "data": [
+    { "id": 5, "username": "manager01", "full_name": "Nguyễn Văn A" }
+  ]
+}
 ```
 
 ---

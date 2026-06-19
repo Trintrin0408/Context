@@ -14,7 +14,7 @@
 | UC | Tên | Method · Path | Vai trò | Trạng thái |
 |----|-----|---------------|---------|------------|
 | UC-62 | Lên lịch khảo sát | `POST /orders/{id}/surveys` | Manager | ✅ |
-| UC-63 | Phân công khảo sát | `PATCH /surveys/{id}/assign` | Manager | ✅ |
+| UC-63 | Phân công khảo sát | `POST /surveys/{id}/assign` | Manager | ✅ |
 | UC-64 | Giám sát tiến độ khảo sát | `GET /orders/{id}/surveys` | Manager | ✅ |
 | UC-65 | Xem báo cáo khảo sát | `GET /surveys/{id}` | Manager | ✅ |
 | UC-75 | Phân công nhân sự | `POST /orders/{id}/assignments` | Manager | ✅ |
@@ -32,7 +32,7 @@
 
 ### `[UC-62]` Lên lịch khảo sát · `[UC-63]` Phân công khảo sát
 
-`POST /orders/{id}/surveys` · `PATCH /surveys/{id}/assign`
+`POST /orders/{id}/surveys` · `POST /surveys/{id}/assign`
 
 | | |
 |---|---|
@@ -80,7 +80,7 @@
     "items": [
       { "id": 1, "catalog_item_id": 15, "item_name": "Cổng hoa", "quantity_required": 2 }
     ],
-    "evidence_files": [ { "id": 40, "file_url": "https://cdn/.../1.jpg" } ]
+    "evidence_files": [ { "id": 40, "file_name": "sanh1.jpg", "file_type": "image/jpeg", "file_size": 250000, "file_url": "https://cdn/.../1.jpg" } ]
   }
 }
 ```
@@ -106,7 +106,7 @@
 **Response `201`**
 
 ```json
-{ "success": true, "code": "MSG-AS-01", "message": "Phân công thành công", "data": { "id": 25, "order_id": 10, "user_id": 12, "status": "assigned" } }
+{ "success": true, "code": "MSG-AS-01", "message": "Phân công thành công", "data": { "id": 25, "order_id": 10, "user_id": 12, "assigned_date": "2026-07-01", "session_type": "morning", "status": "assigned" } }
 ```
 
 **Lỗi có thể gặp**
@@ -128,7 +128,7 @@
 | **UC · BR** | UC-76 · BR-TS01–04 |
 | **Mô tả** | Lập các mốc lịch vận hành (giao hàng trước lắp đặt; thu hồi + hoàn trả sau sự kiện). |
 
-> ⚠️ **DB thiếu bảng `order_schedules`** (có trong `ERD.md` E21, không có trong `database.md`). Cần bổ sung bảng nếu muốn lưu lịch vận hành tách biệt; nếu không, có thể dùng `assignments`/`tasks` loại vận chuyển.
+> ⚠️ **Lưu ý DB:** Yêu cầu tạo bảng `order_schedules` (`order_id`, `schedule_type`, `scheduled_at`, `notes`) trong Database để lưu lịch vận hành tách biệt theo đúng ERD E21.
 
 **Response `201`** _(tạm thời)_
 
@@ -174,7 +174,7 @@
 | **UC · BR** | UC-79 · BR-MF / BR-FP |
 | **Mô tả** | Theo dõi tiến độ vận chuyển/lắp đặt/thu hồi theo thời gian thực. |
 
-> ⚠️ **DB thiếu bảng `task_progress_updates`** (có trong `ERD.md` E25). Tạm đọc trạng thái từ `tasks.status`; nếu cần nhật ký tiến độ + bằng chứng theo mốc thì phải bổ sung bảng.
+> ⚠️ **Lưu ý DB:** Yêu cầu tạo bảng `task_progress_updates` trong Database để lưu nhật ký tiến độ và bằng chứng theo từng mốc theo đúng ERD E25. Dữ liệu sẽ được đọc từ bảng này.
 
 **Response `200`**
 
@@ -212,7 +212,7 @@
 { "success": true, "code": "MSG-CR-01", "message": "Đã duyệt yêu cầu thay đổi", "data": { "id": 14, "status": "approved" } }
 ```
 
-> ⚠️ `database.md` bảng `change_requests` **không có bảng con `change_request_items`** (có trong `documents.md`/`ERD.md`). Nội dung thay đổi hiện chỉ lưu ở `description` (text tự do), chưa itemize được số lượng/tác động chi phí.
+> ⚠️ **Lưu ý DB:** API yêu cầu tạo bảng `change_request_items` (`change_request_id`, `catalog_item_id`, `quantity`, `change_type`) trong Database để chi tiết hóa số lượng và tác động chi phí theo đúng ERD E36.
 
 ---
 

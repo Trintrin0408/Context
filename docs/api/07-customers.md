@@ -44,6 +44,7 @@
       "email": "b@example.com",
       "address": "123 Lê Lợi, Q1",
       "status": "active",
+      "updated_by": { "id": 5, "full_name": "Nguyễn Văn A" },
       "created_at": "2026-02-01T08:00:00Z"
     }
   ],
@@ -76,7 +77,8 @@
     "address": "123 Lê Lợi, Q1",
     "notes": "Khách quen, ưu tiên tông trắng",
     "status": "active",
-    "created_by": 5,
+    "created_by": { "id": 5, "full_name": "Nguyễn Văn A" },
+    "updated_by": { "id": 5, "full_name": "Nguyễn Văn A" },
     "created_at": "2026-02-01T08:00:00Z",
     "updated_at": "2026-02-01T08:00:00Z"
   }

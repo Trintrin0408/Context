@@ -20,6 +20,41 @@
 
 ## Chi tiết endpoint
 
+### `[—]` Xem chi tiết báo giá
+
+`GET /quotations/{id}`
+
+| | |
+|---|---|
+| **Vai trò** | Manager |
+| **Mô tả** | Xem chi tiết một báo giá bao gồm các hạng mục (`quotation_lines`) và người tạo báo giá. |
+
+**Response `200`**
+
+```json
+{
+  "success": true,
+  "data": {
+    "id": 30,
+    "order_id": 10,
+    "version": 1,
+    "total_amount": 5000000,
+    "discount_amount": 200000,
+    "final_amount": 4800000,
+    "notes": "Báo giá lần 1",
+    "status": "draft",
+    "created_by": { "id": 5, "full_name": "Nguyễn Văn A" },
+    "created_at": "2026-06-18T09:30:00Z",
+    "lines": [
+      { "catalog_item_id": 10, "item_name": "Loa Bose L1", "quantity": 4, "unit_price": 500000 },
+      { "catalog_item_id": 15, "item_name": "Cổng hoa", "quantity": 1, "unit_price": 3000000 }
+    ]
+  }
+}
+```
+
+---
+
 ### `[UC-50]` Tạo báo giá
 
 `POST /orders/{orderId}/quotations`
@@ -109,6 +144,7 @@
 
 | HTTP | code | Khi nào |
 |------|------|---------|
+| 400 | MSG-UQ-04 | `discount_amount` lớn hơn `total_amount` |
 | 409 | MSG-UQ-02 | Đơn đã xác nhận, báo giá bị khóa (BR-UQ01) |
 | 409 | MSG-UQ-03 | Có hàng hóa `inactive` (BR-UQ03) |
 

@@ -56,7 +56,7 @@
 }
 ```
 
-**Ghi chú:** `current_price` lấy từ `item_price_history` có `valid_to = NULL` (giá hiện hành).
+**Ghi chú:** `current_price` lấy từ `item_price_history` có `valid_to = NULL` (giá hiện hành). **Nếu item chưa được thiết lập giá, `current_price` sẽ trả về `null`.** Frontend cần lưu ý xử lý hiển thị case này.
 
 ---
 
@@ -203,7 +203,7 @@
 |---|---|
 | **Vai trò** | Admin |
 | **UC · BR** | UC-27 · BR-SP01–06 |
-| **Mô tả** | Thêm mốc giá mới có hiệu lực. Hệ thống tự đóng `valid_to` của giá hiện hành cũ (giữ lịch sử, không xóa). |
+| **Mô tả** | Thêm mốc giá mới có hiệu lực. Hệ thống tự đóng `valid_to` của giá hiện hành cũ (giữ lịch sử, không xóa). *Lưu ý:* `valid_from` phải ở định dạng ISO-8601 UTC (theo README §A.6). |
 
 **Request body**
 

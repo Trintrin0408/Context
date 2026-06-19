@@ -81,16 +81,26 @@
 
 ---
 
-### `[—]` Callback VNPay
+### `[—]` Callback VNPay (IPN)
 
 `POST /payments/vnpay/callback`
 
 | | |
 |---|---|
 | **Vai trò** | VNPay (không qua token; xác thực bằng chữ ký) |
-| **Mô tả** | VNPay gọi về khi khách thanh toán xong. Hệ thống kiểm tra chữ ký, cập nhật `payments.status` (`confirmed`/`failed`) theo `transaction_ref`. |
+| **Mô tả** | VNPay gọi về (IPN) khi khách thanh toán xong. Hệ thống bắt buộc phải kiểm tra chữ ký `vnp_SecureHash` (thuật toán HMAC-SHA512) để xác minh tính toàn vẹn **trước khi** xử lý. Nếu hợp lệ, hệ thống đối chiếu `vnp_Amount`, kiểm tra `vnp_ResponseCode` và cập nhật `payments.status` (`confirmed`/`failed`) dựa trên `vnp_TxnRef` (chứa `payment_id` hoặc `order_id`). |
 
-> ⚠️ **Khung đề xuất** — cần chốt: định dạng payload, thuật toán chữ ký (HMAC SHA512), cơ chế IPN vs return URL. Tham chiếu tài liệu VNPay khi triển khai.
+**Request Payload (x-www-form-urlencoded)**
+
+```json
+{
+  "vnp_TxnRef": "PAY40",
+  "vnp_Amount": "144000000",
+  "vnp_ResponseCode": "00",
+  "vnp_TransactionNo": "123456789",
+  "vnp_SecureHash": "b2c9..."
+}
+```
 
 **Response `200`**
 
@@ -181,3 +191,55 @@
 | 409 | MSG-FNL-03 | Số tiền không khớp dư nợ / dữ liệu vận hành chưa hoàn chỉnh |
 
 > ⚠️ **Sửa mã lỗi:** `documents.md` dùng chung **BR-FP01–05** cho cả "Quên mật khẩu" (mục Xác thực) và "Thanh toán cuối" (mục Thanh toán) — trùng số hiệu ở ngay tài liệu nguồn. Tương tự **MSG-FP** vừa là "Quên mật khẩu" vừa là "Tiến độ hiện trường" (mục 8). Để tránh đụng mã với [01-auth.md](./01-auth.md) (đã dùng `MSG-FP-01` cho quên mật khẩu), endpoint này đổi sang **MSG-FNL** (tự đặt, Final Payment).
+
+---
+
+### `[D-07]` Xem danh sách thanh toán của đơn hàng
+
+`GET /orders/{id}/payments`
+
+| | |
+|---|---|
+| **Vai trò** | Manager |
+| **Mô tả** | Danh sách tất cả các khoản thanh toán (deposit, final, refund) liên quan đến đơn hàng. |
+
+**Response `200`**
+
+```json
+{
+  "success": true,
+  "data": [
+    { "id": 40, "payment_type": "deposit", "amount": 1440000, "status": "confirmed", "created_at": "2026-06-20T10:00:00Z" }
+  ]
+}
+```
+
+---
+
+### `[B-10]` Xem chi tiết quyết toán của đơn hàng
+
+`GET /orders/{id}/settlement`
+
+| | |
+|---|---|
+| **Vai trò** | Manager |
+| **Mô tả** | Xem toàn bộ thông tin quyết toán của đơn hàng (sau khi hoàn tất sự kiện), bao gồm các hạng mục phát sinh (`settlement_lines`). |
+
+**Response `200`**
+
+```json
+{
+  "success": true,
+  "data": {
+    "id": 9,
+    "order_id": 10,
+    "total_quotation_amount": 4800000,
+    "deposit_paid": 1440000,
+    "balance": 3360000,
+    "status": "pending_approval",
+    "lines": [
+      { "id": 1, "description": "Phụ phí làm đêm", "amount": 500000 }
+    ]
+  }
+}
+```

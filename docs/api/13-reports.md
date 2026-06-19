@@ -59,7 +59,7 @@
 | **UC** | UC-40 |
 | **Mô tả** | Doanh thu theo khoảng thời gian, nhóm theo tháng. |
 
-**Query params:** `?from_date=2026-01-01&to_date=2026-06-30&group_by=month`
+**Query params:** `?from_date=2026-01-01&to_date=2026-06-30&group_by=month` *(Hỗ trợ `group_by`: `day`, `month`, `year`)*
 
 **Response `200`**
 
@@ -68,6 +68,7 @@
   "success": true,
   "data": {
     "total": 850000000,
+    "group_by": "month",
     "series": [
       { "period": "2026-05", "revenue": 150000000 },
       { "period": "2026-06", "revenue": 200000000 }

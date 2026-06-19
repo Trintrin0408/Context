@@ -16,7 +16,7 @@
 | UC-55 | Theo dõi trạng thái đơn | `GET /orders/{id}/status-history` | Manager | ✅ |
 | UC-56 | Tạo đơn hàng | `POST /orders` | Manager | ✅ |
 | UC-57 | Cập nhật đơn hàng | `PUT /orders/{id}` | Manager | ✅ |
-| UC-58 | Xác nhận đơn hàng | `POST /orders/{id}/confirm` | Manager | ✅ |
+| UC-58 | Xác nhận đơn hàng | `PATCH /orders/{id}/confirm` | Manager | ✅ |
 | UC-59 | Đổi ngày sự kiện | `POST /orders/{id}/change-date` | Manager | ✅ |
 | UC-60 | Hủy đơn hàng | `POST /orders/{id}/cancel` | Manager | ✅ |
 
@@ -91,7 +91,9 @@
     "notes": "Tông màu trắng - xanh",
     "status": "confirmed",
     "created_by": 5,
-    "created_at": "2026-06-10T08:00:00Z"
+    "updated_by": 5,
+    "created_at": "2026-06-10T08:00:00Z",
+    "updated_at": "2026-06-15T09:00:00Z"
   }
 }
 ```
@@ -108,7 +110,7 @@
 |---|---|
 | **Vai trò** | Manager |
 | **UC** | UC-55 |
-| **Mô tả** | Lịch sử chuyển trạng thái của đơn. ⚠️ Nguồn dữ liệu tạm đọc từ `audit_logs` (xem cảnh báo đầu file). |
+| **Mô tả** | Lịch sử chuyển trạng thái của đơn. Dữ liệu được đọc từ bảng `order_status_history`. |
 
 **Response `200`**
 
@@ -160,6 +162,7 @@
 | HTTP | code | Khi nào |
 |------|------|---------|
 | 400 | MSG-CO-02 | Thiếu `event_date` hoặc địa điểm (BR-CO03) |
+| 400 | MSG-CO-04 | `event_date` phải là ngày trong tương lai (lớn hơn ngày hiện tại) |
 | 404 | MSG-CO-03 | `customer_id` không tồn tại |
 
 **Ghi chú:** Ghi audit log (BR-CO05).
@@ -188,7 +191,7 @@
 
 ### `[UC-58]` Xác nhận đơn hàng
 
-`POST /orders/{id}/confirm`
+`PATCH /orders/{id}/confirm`
 
 | | |
 |---|---|
@@ -233,7 +236,18 @@
 **Response `200`**
 
 ```json
-{ "success": true, "code": "MSG-CED-01", "message": "Đổi ngày sự kiện thành công", "data": { "id": 10, "event_date": "2026-07-15" } }
+{ 
+  "success": true, 
+  "code": "MSG-CED-01", 
+  "message": "Đổi ngày sự kiện thành công", 
+  "data": { 
+    "id": 10, 
+    "old_date": "2026-07-01", 
+    "new_date": "2026-07-15", 
+    "reason": "Khách dời lịch", 
+    "changed_at": "2026-06-20T10:00:00Z" 
+  } 
+}
 ```
 
 **Lỗi có thể gặp**
@@ -243,7 +257,7 @@
 | 409 | MSG-CED-02 | Vi phạm chính sách đổi ngày |
 | 409 | MSG-CED-03 | Tồn kho ngày mới không đủ |
 
-> ⚠️ `reason` và lịch sử đổi ngày chưa có bảng lưu trong `database.md`.
+> ⚠️ **Lưu ý DB:** Dữ liệu đổi ngày được lưu vào bảng `order_date_changes`.
 
 ---
 
@@ -266,12 +280,54 @@
 **Response `200`**
 
 ```json
-{ "success": true, "code": "MSG-CAN-01", "message": "Hủy đơn hàng thành công", "data": { "id": 10, "status": "cancelled" } }
+{ 
+  "success": true, 
+  "code": "MSG-CAN-01", 
+  "message": "Hủy đơn hàng thành công", 
+  "data": { 
+    "id": 10, 
+    "status": "cancelled",
+    "refund_amount": 500000,
+    "policy_applied": "CANCEL_REFUND_7D"
+  } 
+}
 ```
 
 **Lỗi:** `409 MSG-CAN-02` — trạng thái không cho phép hủy.
 
-> ⚠️ `refund_amount`, `policy_applied` (entity Order Cancellation) chưa có bảng lưu trong `database.md`; hoàn cọc có thể ghi qua `payments` loại `refund`.
+> ⚠️ **Lưu ý DB:** Chi tiết hủy đơn được lưu vào bảng `order_cancellations`. Hoàn cọc có thể ghi qua `payments` loại `refund`.
+
+---
+
+### `[B-01]` Quản lý hạng mục đơn hàng (Order Items)
+
+`GET /orders/{id}/items` · `POST /orders/{id}/items`
+
+| | |
+|---|---|
+| **Vai trò** | Manager |
+| **Mô tả** | Lấy danh sách hoặc thêm mới các hạng mục (Order Item) vào đơn hàng. |
+
+**POST Request body**
+
+```json
+{
+  "items": [
+    { "catalog_item_id": 10, "quantity": 4, "unit_price": 500000 }
+  ]
+}
+```
+
+**Response `201`**
+
+```json
+{
+  "success": true,
+  "code": "MSG-CO-05",
+  "message": "Thêm hạng mục đơn hàng thành công",
+  "data": { "order_id": 10, "items_count": 1 }
+}
+```
 
 ---
 

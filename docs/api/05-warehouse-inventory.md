@@ -56,7 +56,7 @@
 | **UC · BR** | UC-66, UC-67 · BR-IA01–04, BR-RI01–03 |
 | **Mô tả** | Kiểm tra số lượng còn trống (chưa đặt chỗ) cho một `event_date` và danh sách hàng hóa. **KHÔNG tạo đặt chỗ**. Hàng đã đặt chỗ cho ngày đó không được tính là khả dụng. UC-67 dùng lại endpoint này để kiểm tra lại sau khảo sát. |
 
-**Query params:** `?event_date=2026-07-01&item_ids=10,15,20`
+**Query params:** `?event_date=2026-07-01&item_ids[]=10&item_ids[]=15&item_ids[]=20`
 
 **Response `200`**
 
@@ -64,11 +64,12 @@
 {
   "success": true,
   "data": [
-    { "catalog_item_id": 10, "name": "Loa Bose L1", "quantity_total": 20, "reserved_on_date": 8, "available": 12 },
-    { "catalog_item_id": 15, "name": "Cổng hoa", "quantity_total": 5, "reserved_on_date": 5, "available": 0 }
+    { "catalog_item_id": 10, "name": "Loa Bose L1", "quantity_total": 20, "reserved_on_date": 8, "quantity_available_today": 12 },
+    { "catalog_item_id": 15, "name": "Cổng hoa", "quantity_total": 5, "reserved_on_date": 5, "quantity_available_today": 0 }
   ]
 }
 ```
+*(Ghi chú: `quantity_available_today = quantity_total - reserved_on_date`, đây là kết quả kiểm tra theo ngày cụ thể, khác với `inventory.quantity_available` là trạng thái real-time trong DB).*
 
 ---
 
@@ -87,12 +88,14 @@
 ```json
 {
   "assignment_id": 25,
+  "warehouse_id": 1,
   "items": [
     { "catalog_item_id": 10, "quantity_required": 4 },
     { "catalog_item_id": 15, "quantity_required": 2 }
   ]
 }
 ```
+*(Ghi chú: `warehouse_id` nếu không truyền sẽ lấy mặc định là kho chính).*
 
 **Response `201`**
 
@@ -101,7 +104,7 @@
   "success": true,
   "code": "MSG-PL-01",
   "message": "Tạo phiếu xuất kho thành công",
-  "data": { "id": 33, "order_id": 10, "assignment_id": 25, "status": "pending" }
+  "data": { "id": 33, "order_id": 10, "assignment_id": 25, "warehouse_id": 1, "status": "pending" }
 }
 ```
 
@@ -127,8 +130,8 @@
   "data": {
     "order_id": 10,
     "items": [
-      { "catalog_item_id": 10, "checked_out": 4, "returned": 4, "damaged": 0, "missing": 0 },
-      { "catalog_item_id": 15, "checked_out": 2, "returned": 1, "damaged": 1, "missing": 0 }
+      { "catalog_item_id": 10, "pick_list_id": 33, "checked_out": 4, "returned": 4, "damaged": 0, "missing": 0 },
+      { "catalog_item_id": 15, "pick_list_id": 33, "checked_out": 2, "returned": 1, "damaged": 1, "missing": 0 }
     ]
   }
 }
