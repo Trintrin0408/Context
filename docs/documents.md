@@ -381,7 +381,7 @@
 
 ---
 
-## 6. Mô hình thực thể (44 Entity)
+## 6. Mô hình thực thể (45 Entity)
 
 ### Xác thực & Phân quyền
 
@@ -391,6 +391,7 @@
 | 2   | Permission      | name, feature                                                       |
 | 3   | Role Permission | role_id, permission_id                                              |
 | 4   | Internal User   | full_name, username, email, phone, role_id, status, platform_access |
+| 4b  | Password Reset Token | user_id, otp, token, expires_at, is_used                       |
 
 ### Nghiệp vụ cốt lõi
 

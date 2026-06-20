@@ -58,6 +58,7 @@
 | E02 | Permission                 | Quyền truy cập              | Supporting/Master       | Quyền hoặc chức năng được phép thực hiện trong hệ thống.                                                                   |
 | E03 | Role Permission            | Phân quyền vai trò          | Associative             | Ghi nhận Permission được gán cho Role.                                                                                     |
 | E04 | Internal User              | Người dùng nội bộ           | Master                  | Nhân sự nội bộ có tài khoản sử dụng hệ thống.                                                                              |
+| E04b | Password Reset Token      | Token khôi phục mật khẩu    | Transaction/Security    | Lưu trữ mã OTP và token đặt lại mật khẩu của người dùng.                                                                   |
 | E05 | Customer                   | Khách hàng                  | Master                  | Người hoặc tổ chức thuê dịch vụ cưới hỏi/sự kiện.                                                                          |
 | E06 | Supplier                   | Nhà cung cấp                | Master                  | Đối tác cung cấp thiết bị, vật tư hoặc dịch vụ bổ sung.                                                                    |
 | E07 | Warehouse                  | Kho                         | Master                  | Kho nội bộ lưu trữ thiết bị của doanh nghiệp.                                                                              |
@@ -131,6 +132,7 @@
 | R02 | Role       | N:N       | Permission      | has permission     | Một Role có nhiều Permission; một Permission có thể thuộc nhiều Role.           |
 | R03 | Role       | 1:N       | Role Permission | has                | Nếu vẽ entity trung gian, một Role có nhiều Role Permission.                    |
 | R04 | Permission | 1:N       | Role Permission | is granted through | Nếu vẽ entity trung gian, một Permission xuất hiện trong nhiều Role Permission. |
+| R04b| Internal User| 1:N       | Password Reset Token | has         | Một Internal User có thể tạo ra nhiều yêu cầu khôi phục mật khẩu.               |
 
 Gợi ý vẽ: nên vẽ Role Permission để thể hiện rõ quan hệ N:N giữa Role và Permission.
 
@@ -348,6 +350,7 @@ Evidence File là minh chứng nghiệp vụ được đính kèm cho Survey Rep
 | 1   | Role                      | 1:N       | Internal User              |
 | 3   | Role                      | 1:N       | Role Permission            |
 | 4   | Permission                | 1:N       | Role Permission            |
+| 4b  | Internal User             | 1:N       | Password Reset Token       |
 | 5   | Customer                  | 1:N       | Order                      |
 | 6   | Order                     | 1:N       | Order Item                 |
 | 7   | Catalog Item              | 1:N       | Order Item                 |

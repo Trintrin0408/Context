@@ -1,4 +1,4 @@
-Dưới đây là chi tiết toàn bộ 44 bảng (bao gồm 3 bảng mới bổ sung), không tóm tắt, chứa đầy đủ mọi thuộc tính và ràng buộc.
+Dưới đây là chi tiết toàn bộ 45 bảng (bao gồm bảng password_reset_tokens mới bổ sung), không tóm tắt, chứa đầy đủ mọi thuộc tính và ràng buộc.
 
 _(Ghi chú: Tất cả cột id đều có kiểu BIGINT PRIMARY KEY AUTO_INCREMENT)_
 
@@ -28,6 +28,12 @@ _(Ghi chú: Tất cả cột id đều có kiểu BIGINT PRIMARY KEY AUTO_INCREM
 |                          | device_token           | VARCHAR(255) | NOT NULL, UNIQUE           | Token Push Notification/WebSocket.          |
 |                          | device_type            | ENUM         | NOT NULL                   | android, web.                               |
 |                          | created_at, updated_at | TIMESTAMP    | NOT NULL                   | Lần cuối truy cập.                          |
+| **5b\. password_reset_tokens** | user_id          | BIGINT       | NOT NULL, FK, CASCADE      | Trỏ về users.id.                            |
+|                          | otp                    | VARCHAR(10)  | NULL                       | Mã OTP (6 số).                              |
+|                          | token                  | VARCHAR(255) | NULL, UNIQUE               | Token để đặt lại mật khẩu.                  |
+|                          | expires_at             | TIMESTAMP    | NOT NULL                   | Hạn sử dụng của OTP/Token.                  |
+|                          | is_used                | BOOLEAN      | NOT NULL, DEFAULT FALSE    | Đánh dấu OTP/Token đã dùng.                 |
+|                          | created_at             | TIMESTAMP    | NOT NULL                   | Ngày tạo.                                   |
 
 #### **II. ĐỐI TÁC, KHÁCH HÀNG & CHÍNH SÁCH (Entities 4, 5, 7\)**
 
