@@ -8,6 +8,7 @@ _(Ghi chú: Tất cả cột id đều có kiểu BIGINT PRIMARY KEY AUTO_INCREM
 | :----------------------- | :--------------------- | :----------- | :------------------------- | :------------------------------------------ |
 | **1\. roles**            | name                   | VARCHAR(50)  | NOT NULL, UNIQUE           | Tên vai trò (Admin, Manager, Leader, Tech). |
 |                          | description            | TEXT         | NULL                       | Chú thích chức năng.                        |
+|                          | status                 | ENUM         | NOT NULL, DEFAULT 'active' | active, inactive.                           |
 |                          | created_at, updated_at | TIMESTAMP    | NOT NULL                   | Thời gian tạo/cập nhật.                     |
 | **2\. permissions**      | name                   | VARCHAR(100) | NOT NULL                   | Tên quyền hạn hiển thị.                     |
 |                          | code                   | VARCHAR(100) | NOT NULL, UNIQUE           | Mã quyền Backend (VD: order.view).          |
