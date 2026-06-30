@@ -171,3 +171,79 @@ This module handles **UC 2.1 (Authentication)** and **UC 2.2 (Personal Account M
   }
 }
 ```
+
+### 7. `POST /api/v1/auth/device-token`
+- **Use Case:** UC 7 - Register Device Token
+- **Description:** Registers or updates a device token (e.g., FCM token) for the authenticated user to receive push notifications.
+- **Headers:** `Authorization: Bearer <token>`
+- **Request Body:**
+```json
+{
+  "deviceToken": "fcm_token_string_here",
+  "deviceType": "android" 
+}
+```
+- **Response (200 OK):**
+```json
+{
+  "success": true,
+  "code": "MSG-AU-00",
+  "message": "Device token registered successfully."
+}
+```
+
+### 8. `GET /api/v1/notifications`
+- **Use Case:** UC 7 - View Notifications
+- **Description:** Retrieves a paginated list of notifications for the authenticated user.
+- **Headers:** `Authorization: Bearer <token>`
+- **Query Params:** `?page=1&limit=20`
+- **Response (200 OK):**
+```json
+{
+  "success": true,
+  "code": "MSG-AU-00",
+  "data": [
+    {
+      "notificationId": 1,
+      "title": "New Order Assigned",
+      "body": "You have been assigned to Order #ORD-010.",
+      "type": "ORDER_ASSIGNMENT",
+      "referenceId": 10,
+      "isRead": false,
+      "createdAt": "2026-06-22T10:05:00Z"
+    }
+  ],
+  "meta": {
+    "page": 1,
+    "limit": 20,
+    "total": 1,
+    "total_pages": 1
+  }
+}
+```
+
+### 9. `PUT /api/v1/notifications/:id/read`
+- **Use Case:** UC 7 - Mark Notification as Read
+- **Description:** Marks a specific notification as read.
+- **Headers:** `Authorization: Bearer <token>`
+- **Response (200 OK):**
+```json
+{
+  "success": true,
+  "code": "MSG-AU-00",
+  "message": "Notification marked as read."
+}
+```
+
+### 10. `PUT /api/v1/notifications/read-all`
+- **Use Case:** UC 7 - Mark All Notifications as Read
+- **Description:** Marks all unread notifications for the user as read.
+- **Headers:** `Authorization: Bearer <token>`
+- **Response (200 OK):**
+```json
+{
+  "success": true,
+  "code": "MSG-AU-00",
+  "message": "All notifications marked as read."
+}
+```
