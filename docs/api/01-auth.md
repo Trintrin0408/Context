@@ -1,4 +1,4 @@
-﻿# Core System & Access: Authentication and Personal Account
+# Core System & Access: Authentication and Personal Account
 
 ## Overview
 This module handles **UC 2.1 (Authentication)** and **UC 2.2 (Personal Account Management)** for `Internal User`. It uses JSON Web Tokens (JWT) for session management and relies on the `InternalUser` entity.
@@ -123,6 +123,44 @@ This module handles **UC 2.1 (Authentication)** and **UC 2.2 (Personal Account M
     "phone": "+123456789",
     "avatarUrl": "https://example.com/avatar.jpg",
     "bio": "System Administrator",
+    "role": {
+      "roleId": 1,
+      "roleName": "Admin"
+    },
+    "status": "active",
+    "createdAt": "2026-06-22T10:00:00Z",
+    "updatedAt": "2026-06-22T10:00:00Z"
+  }
+}
+```
+
+### 6. `PUT /api/v1/auth/profile`
+- **Use Case:** UC 2.2 - Update Profile
+- **Description:** Allows the authenticated user to update their personal profile information, including their avatar.
+- **Headers:** `Authorization: Bearer <token>`
+- **Request Body:**
+```json
+{
+  "fullName": "System Admin Updated",
+  "phone": "+1234567890",
+  "bio": "Updated System Administrator",
+  "avatarUrl": "https://example.com/new-avatar.jpg"
+}
+```
+- **Response (200 OK):**
+```json
+{
+  "success": true,
+  "code": "MSG-AU-00",
+  "message": "Profile updated successfully.",
+  "data": {
+    "userId": 1,
+    "username": "adminUser",
+    "fullName": "System Admin Updated",
+    "email": "admin@example.com",
+    "phone": "+1234567890",
+    "avatarUrl": "https://example.com/new-avatar.jpg",
+    "bio": "Updated System Administrator",
     "role": {
       "roleId": 1,
       "roleName": "Admin"

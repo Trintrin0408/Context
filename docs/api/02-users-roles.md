@@ -1,4 +1,4 @@
-﻿# Core System & Access: User and Notification Management
+# Core System & Access: User and Notification Management
 
 ## Overview
 This module handles **UC 2.4 (User & Permission Management)** and **UC 2.3 (Notification Management)**.
@@ -63,7 +63,8 @@ It primarily interacts with the `InternalUser` and `Notification` entities.
   "roleId": 2,
   "email": "user1@company.vn",
   "phone": "0900000000",
-  "bio": "Events Manager"
+  "bio": "Events Manager",
+  "avatarUrl": "https://example.com/avatar.jpg"
 }
 ```
 - **Response (201 Created):**
@@ -98,7 +99,8 @@ It primarily interacts with the `InternalUser` and `Notification` entities.
   "roleId": 2,
   "email": "user2@company.vn",
   "phone": "0900000002",
-  "bio": "Senior Events Manager"
+  "bio": "Senior Events Manager",
+  "avatarUrl": "https://example.com/avatar-updated.jpg"
 }
 ```
 - **Response (200 OK):**
