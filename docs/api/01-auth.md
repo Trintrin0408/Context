@@ -1,4 +1,4 @@
-# Core System & Access: Authentication and Personal Account
+﻿# Core System & Access: Authentication and Personal Account
 
 ## Overview
 This module handles **UC 2.1 (Authentication)** and **UC 2.2 (Personal Account Management)** for `Internal User`. It uses JSON Web Tokens (JWT) for session management and relies on the `InternalUser` entity.
@@ -17,7 +17,7 @@ This module handles **UC 2.1 (Authentication)** and **UC 2.2 (Personal Account M
 - **Description:** Authenticates an internal user and issues a JWT token.
 - **Business Rules:**
   - BR-01-01: Must validate username and password against `InternalUser` table.
-  - BR-01-02: User `status` must be `ACTIVE`. If `LOCKED` or `INACTIVE`, return error `MSG-UC01-03`.
+  - BR-01-02: User `status` must be `active`. If inactive, return error `MSG-UC01-03`.
   - BR-01-03: On success, log activity in `AuditLog`.
 - **Request Body:**
 ```json
@@ -30,6 +30,7 @@ This module handles **UC 2.1 (Authentication)** and **UC 2.2 (Personal Account M
 ```json
 {
   "success": true,
+  "code": "MSG-AU-00",
   "message": "Login successful",
   "data": {
     "token": "eyJhbGciOiJIUzI1...",
@@ -38,6 +39,8 @@ This module handles **UC 2.1 (Authentication)** and **UC 2.2 (Personal Account M
       "userId": 1,
       "username": "adminUser",
       "fullName": "System Admin",
+      "avatarUrl": "https://example.com/avatar.jpg",
+      "bio": "System Administrator",
       "role": {
         "roleId": 1,
         "roleName": "Admin"
@@ -56,6 +59,7 @@ This module handles **UC 2.1 (Authentication)** and **UC 2.2 (Personal Account M
 ```json
 {
   "success": true,
+  "code": "MSG-AU-00",
   "message": "Logged out successfully."
 }
 ```
@@ -73,6 +77,7 @@ This module handles **UC 2.1 (Authentication)** and **UC 2.2 (Personal Account M
 ```json
 {
   "success": true,
+  "code": "MSG-AU-00",
   "message": "If the account exists, a recovery email has been sent."
 }
 ```
@@ -96,6 +101,7 @@ This module handles **UC 2.1 (Authentication)** and **UC 2.2 (Personal Account M
 ```json
 {
   "success": true,
+  "code": "MSG-AU-00",
   "message": "Password changed successfully."
 }
 ```
@@ -108,10 +114,15 @@ This module handles **UC 2.1 (Authentication)** and **UC 2.2 (Personal Account M
 ```json
 {
   "success": true,
+  "code": "MSG-AU-00",
   "data": {
     "userId": 1,
     "username": "adminUser",
     "fullName": "System Admin",
+    "email": "admin@example.com",
+    "phone": "+123456789",
+    "avatarUrl": "https://example.com/avatar.jpg",
+    "bio": "System Administrator",
     "role": {
       "roleId": 1,
       "roleName": "Admin"
