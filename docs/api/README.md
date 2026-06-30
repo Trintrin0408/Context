@@ -47,6 +47,7 @@
 > - `MSG-PM`: Payment & Settlement
 > - `MSG-MO`: Mobile (Tiến độ hiện trường)
 > - `MSG-RP`: Report
+> - `MSG-UF`: Upload File
 
 ### A.3 Envelope lỗi
 
@@ -167,5 +168,6 @@ Copy khối dưới đây cho từng endpoint. Endpoint đơn giản (login, lis
 | 11 | [11-payments-settlement.md](./11-payments-settlement.md) | Thanh toán + quyết toán | 83–87 | Web | _(chưa phân)_ |
 | 12 | [12-mobile-field-ops.md](./12-mobile-field-ops.md) | App mobile (Leader/Tech) | 88–107 | Mobile | _(chưa phân)_ |
 | 13 | [13-reports.md](./13-reports.md) | Báo cáo + dashboard quản trị | 39A, 40–46 | Web | _(chưa phân)_ |
+| 14 | [14-file-upload.md](./14-file-upload.md) | Tiện ích hệ thống (Upload file/ảnh) | All | Web + Mobile | _(chưa phân)_ |
 
 > **Quy ước trạng thái** trong từng file: ⬜ chưa viết · 🟡 đang viết · ✅ xong.
